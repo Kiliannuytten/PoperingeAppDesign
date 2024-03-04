@@ -38,6 +38,7 @@ import be.kiliannuytten.poperinge_screen_designs.ui.screens.MenuScreen
 import be.kiliannuytten.poperinge_screen_designs.ui.theme.Achtergrondkleur
 import be.kiliannuytten.poperinge_screen_designs.ui.theme.LichtOranje
 import be.kiliannuytten.poperinge_screen_designs.ui.theme.Oranje
+import be.kiliannuytten.poperinge_screen_designs.ui.viewmodels.CollectionViewModel
 
 enum class PoperingeAppScreens(@StringRes val title: Int) {
     Disclaimer(title = R.string.disclaimer),
@@ -57,6 +58,9 @@ fun PoperingeApp(
     val currentScreen = PoperingeAppScreens.valueOf(
         backStackEntry?.destination?.route ?: PoperingeAppScreens.Disclaimer.name
     )
+    // viewmodels
+    val collectionViewModel = CollectionViewModel()
+
     // navbar onderaan
     Scaffold(
         bottomBar = {
@@ -136,7 +140,7 @@ fun PoperingeApp(
                 }
                 // collecite
                 composable(route = PoperingeAppScreens.Collection.name){
-                    CollectionScreen()
+                    CollectionScreen(collectionViewmodel = collectionViewModel)
                 }
                 // info
                 composable(route = PoperingeAppScreens.Info.name){
