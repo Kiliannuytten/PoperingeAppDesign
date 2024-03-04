@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Poperinge_Screen_Designs</string>
+    <string name="disclaimer">Disclaimer</string>
+    <string name="menu">Menu</string>
+    <string name="collection">Collection</string>
+    <string name="info">info</string>
+    <string name="map">Map</string>
+    <string name="placemarker">PlaceMarker</string>
+    <string name="handleiding">Handleiding</string>
+</resources>
