@@ -1,5 +1,6 @@
 package be.kiliannuytten.poperinge_screen_designs
 
+import InfoScreen
 import androidx.annotation.StringRes
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,7 +34,6 @@ import androidx.navigation.compose.rememberNavController
 import be.kiliannuytten.poperinge_screen_designs.ui.screens.CollectionScreen
 import be.kiliannuytten.poperinge_screen_designs.ui.screens.DisclaimerScreen
 import be.kiliannuytten.poperinge_screen_designs.ui.screens.HandleidingScreen
-import be.kiliannuytten.poperinge_screen_designs.ui.screens.InfoScreen
 import be.kiliannuytten.poperinge_screen_designs.ui.screens.MapScreen
 import be.kiliannuytten.poperinge_screen_designs.ui.screens.MenuScreen
 import be.kiliannuytten.poperinge_screen_designs.ui.theme.Achtergrondkleur
@@ -54,14 +55,10 @@ fun PoperingeApp(
     navController: NavHostController = rememberNavController()
 ){
     val backStackEntry by navController.currentBackStackEntryAsState()
-    // Get the name of the current screen
     val currentScreen = PoperingeAppScreens.valueOf(
         backStackEntry?.destination?.route ?: PoperingeAppScreens.Disclaimer.name
     )
-    // viewmodels
-    val collectionViewModel = CollectionViewModel()
 
-    // navbar onderaan
     Scaffold(
         bottomBar = {
             if (currentScreen != PoperingeAppScreens.Disclaimer){
@@ -71,10 +68,8 @@ fun PoperingeApp(
                         .navigationBarsPadding()
                         .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(8.dp))
                         .padding(start = 2.dp, end = 2.dp),
-                    //containerColor = LichtOranje,
                     tonalElevation = 2.dp
                 ){
-                    // Map
                     NavigationBarItem(
                         selected = currentScreen == PoperingeAppScreens.Map,
                         onClick = { navController.navigate(PoperingeAppScreens.Map.name) },
@@ -86,7 +81,6 @@ fun PoperingeApp(
                             )
                         }
                     )
-                    // Menu / home
                     NavigationBarItem(
                         selected = currentScreen == PoperingeAppScreens.Menu,
                         onClick = { navController.navigate(PoperingeAppScreens.Menu.name) },
@@ -98,7 +92,6 @@ fun PoperingeApp(
                             )
                         }
                     )
-                    // Collectie
                     NavigationBarItem(
                         selected = currentScreen == PoperingeAppScreens.Collection,
                         onClick = { navController.navigate(PoperingeAppScreens.Collection.name) },
@@ -113,24 +106,22 @@ fun PoperingeApp(
                 }
             }
         }
-    ) {
-        innerPadding ->
+    ) { innerPadding ->
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = Achtergrondkleur
         ) {
+            val collectionViewModel : CollectionViewModel = viewModel()
             NavHost(
                 navController = navController,
                 startDestination = PoperingeAppScreens.Disclaimer.name,
                 modifier = Modifier.padding(innerPadding)
             ){
-                //disclaimer
                 composable(route = PoperingeAppScreens.Disclaimer.name){
                     DisclaimerScreen (
                         onContinueClicked = {navController.navigate(PoperingeAppScreens.Menu.name)}
                     )
                 }
-                // menu
                 composable(route = PoperingeAppScreens.Menu.name){
                     MenuScreen (
                         onCollectionClick = {navController.navigate(PoperingeAppScreens.Collection.name)},
@@ -138,19 +129,20 @@ fun PoperingeApp(
                         onHandleidingClick = {navController.navigate(PoperingeAppScreens.HandLeiding.name)}
                     )
                 }
-                // collecite
                 composable(route = PoperingeAppScreens.Collection.name){
-                    CollectionScreen(collectionViewmodel = collectionViewModel)
+                    CollectionScreen(
+                        collectionViewmodel = collectionViewModel,
+                        onSpookClick = {navController.navigate(PoperingeAppScreens.Info.name)}
+                    )
                 }
-                // info
                 composable(route = PoperingeAppScreens.Info.name){
-                    InfoScreen()
+                    InfoScreen(
+                        collectionViewmodel = collectionViewModel
+                    )
                 }
-                // map
                 composable(route = PoperingeAppScreens.Map.name){
                     MapScreen()
                 }
-                // handleiding
                 composable(route = PoperingeAppScreens.HandLeiding.name){
                     HandleidingScreen()
                 }
@@ -159,3 +151,4 @@ fun PoperingeApp(
         }
     }
 }
+

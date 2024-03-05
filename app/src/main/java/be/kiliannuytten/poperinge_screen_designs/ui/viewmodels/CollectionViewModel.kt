@@ -8,9 +8,12 @@ import androidx.compose.runtime.setValue
 import be.kiliannuytten.poperinge_screen_designs.data.models.Spook
 
 class CollectionViewModel(): ViewModel() {
-    var spookState by mutableStateOf<Spook?>(null)
+    private var spookState by mutableStateOf<Spook?>(null)
     fun updateSpookState (s: Spook){
         spookState = s;
+    }
+    fun getSpook() : Spook? {
+        return spookState;
     }
 
     var spoken = Spoken.getSpoken()
